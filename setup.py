@@ -1,5 +1,5 @@
 from os import path
-from setuptools import setup, find_packages
+from setuptools import setup
 
 # the anchor version
 __version__ = "0.0.1"
@@ -15,7 +15,8 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 setup(
     name="anchor",
     version=__version__,
-    description="ANITA Cosmic Ray Shower Creator",
+    description=("A Cosmic Ray Air Shower Creator for "
+                 "the Antarctic Impulsive Transient Antenna"),
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/rprechelt/anchor",
@@ -33,7 +34,8 @@ setup(
     keywords=["anita", "physics", "cosmic ray", "astronomy"],
     packages=["anchor"],
     python_requires=">=3.6*, <4",
-    install_requires=[],
+    install_requires=['numpy',
+                      'zhaires @ git+git://github.com/rprechelt/zhaires.py'],
     extras_require={
         "test": ["pytest", "black", "mypy",
                  "coverage", "pytest-cov", "flake8"],
