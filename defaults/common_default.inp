@@ -1,0 +1,34 @@
+# the number of showers that we generate
+TotalShowers 1
+
+# ZHAires is only compatible with one shower at a time
+ShowersPerRun 1
+
+# and we want to restart the process after every run
+RunsPerProcess Infinite
+
+# this is how often we want to save and restart
+MaxCpuTimePerRun 1 hr
+
+# use the atmosphere model for the South Pole
+Atmosphere 1
+
+# a decent maximum weight factor recommended by the manual
+ThinningWFactor 0.06
+
+# turn ZHAires on
+ZHAireS On
+
+# and we want the time domain mode
+FresnelTime On
+
+# with 4 GSa/s time-resolution
+TimeDomainBin 0.25 ns
+
+# use more observing levels to better estimate shower max
+# and save all of the shower parameters
+ObservingLevels 510
+
+# we currently disable the ground and longitudinal particle files
+SaveInFile lgtpcles None
+SaveInFile grdpcles None

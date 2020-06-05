@@ -1,0 +1,7 @@
+# and the injection altitude (curved Earth coordinates)
+InjectionAltitude 100 km
+
+# add the special particle definitions
+AddSpecialParticle      RASPASSProton    /home/rprechelt/02.Science/02.ANITA/05.MCSh/tools/aires_stratospheric_install/bin/RASPASSprimary Proton
+# AddSpecialParticle      RASPASSIron      ./RASPASSprimary Iron
+# AddSpecialParticle      RASPASSelectron  ./RASPASSprimary Electron
