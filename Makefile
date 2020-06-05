@@ -11,7 +11,7 @@
 all: mypy black flake tests
 
 tests:
-	python -m pytest --cov=anchor tests
+	python -m pytest tests
 
 flake:
 	python -m flake8 anchor
