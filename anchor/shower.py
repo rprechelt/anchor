@@ -12,6 +12,8 @@ import zhaires
 from zhaires import run_directory
 
 
+__all__ = ["create_shower", "create_direct", "create_reflected"]
+
 def create_shower(
     name: str,
     particle: str,
