@@ -1,2 +1,4 @@
 include README.md LICENSE
 recursive-include anchor *
+recursive-include defaults *
+include aires/setup.sh
