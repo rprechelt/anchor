@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+
+"""
+Simulate UHECR EASs using anchor.
+
+Run './anchor -h' to get more detail on each parameter.
+"""
+if __name__ == "__main__":
+
+    import argparse
+
+    # create the argument parser
+    parser = argparse.ArgumentParser(
+        description=("Generate UHECR air showers with Aires/ZHAireS")
+    )
+
+    # and add the arguments
+    parser.add_argument(
+        "--type",
+        type=str,
+        required=True,
+        choices=["direct", "reflected"],
+        help="The type of simulation to run.",
+    )
+    parser.add_argument(
+        "--name", type=str, required=True, help="The unique name of this simulation."
+    )
+    parser.add_argument(
+        "--energy",
+        type=float,
+        required=True,
+        help="The energy of the primary neutrino [log10(EeV)].",
+    )
+    parser.add_argument(
+        "--particle", type=str, required=True, help="The particle to simulate"
+    )
+    parser.add_argument(
+        "--zenith",
+        type=float,
+        required=True,
+        help="The zenith angle of the shower axis (degrees).",
+    )
+    parser.add_argument(
+        "--azimuth",
+        type=float,
+        required=True,
+        help="The azimuth angle of the shower axis (degrees).",
+    )
+    parser.add_argument(
+        "--latitude",
+        type=float,
+        required=True,
+        help="The latitude of the simulation site (decimal degrees).",
+    )
+    parser.add_argument(
+        "--longitude",
+        type=float,
+        required=True,
+        help="The longitude of the simulation site (decimal degrees).",
+    )
+    parser.add_argument(
+        "--ground",
+        type=float,
+        required=True,
+        help="The altitude of the ground at the simulation site (km).",
+    )
+    parser.add_argument(
+        "--thinning", type=float, default=1e-6, help="The thinning to use [=1e-6]."
+    )
+    parser.add_argument(
+        "--injection",
+        type=float,
+        default=100.0,
+        help="The injection altitude of the CR in km [=100 km].",
+    )
+    parser.add_argument(
+        "--restart",
+        action="store_true",
+        default=False,
+        help="If True, restart an existing simulation with the same name.",
+    )
+
+    # and parse the arguments
+    args = parser.parse_args()
+
+    # and import tapioca now that we know we have a good set of arguments
+    import anchor
+
+    # check the simulation type
+    if args.type == "direct":
+        create = anchor.create_direct
+    elif args.type == "reflected":
+        create = anchor.create_reflected
+
+    # and now call the shower function
+    sim = create(
+        name=args.name,
+        particle=args.particle,
+        energy=args.energy,
+        zenith=args.zenith,
+        azimuth=args.azimuth,
+        lat=args.latitude,
+        lon=args.longitude,
+        ground=args.ground,
+        thinning=args.thinning,
+        injection=args.injection,
+    )
+
+    # and run the simulation
+    sim.run()

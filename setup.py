@@ -40,7 +40,7 @@ setup(
         "test": ["pytest", "black", "mypy",
                  "coverage", "pytest-cov", "flake8"],
     },
-    scripts=[],
+    scripts=["scripts/anchor"],
     project_urls={},
     include_package_data=True,
 )
