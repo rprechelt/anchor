@@ -7,6 +7,7 @@ import os.path as op
 from os.path import dirname, join
 from typing import Any, Optional
 
+import igrf12
 import zhaires
 from zhaires import run_directory
 
@@ -19,6 +20,7 @@ def create_shower(
     azimuth: float,
     lat: float,
     lon: float,
+    date: str = "2016-12-01",
     ground: float = 0.0,
     thinning: float = 1e-6,
     injection: float = 100.0,
@@ -57,6 +59,8 @@ def create_shower(
         The latitude of the shower access intersecting the ground in degrees.
     lon: float
         The longitude of the shower access intersecting the ground in degrees.
+    date: str
+        A date string in the form 'YYYY-MM-DD'
     ground: float
         The ground altitude at the event location in km.
     thinning: float
@@ -122,6 +126,14 @@ def create_shower(
 
     # and enable this site for the simulation
     sim.site("LatLonAltSite")
+
+    # get the magnetic field for this site
+    B = igrf12.igrf(date, glat=lat, glon=lon, alt_km=ground)
+
+    # and set the magnetic field
+    sim.geomagnetic_field(
+        B["total"].values[0], B["incl"].values[0], B["decl"].values[0]
+    )
 
     # setup the thinning
     sim.thinning_energy(thinning, relative=True)

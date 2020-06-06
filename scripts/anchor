@@ -59,6 +59,12 @@ if __name__ == "__main__":
         help="The longitude of the simulation site (decimal degrees).",
     )
     parser.add_argument(
+        "--date",
+        type=str,
+        default="2016-12-30",
+        help="The date in the form YYYY-MM-DD",
+    )
+    parser.add_argument(
         "--ground",
         type=float,
         required=True,
