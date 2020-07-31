@@ -9,10 +9,11 @@ from typing import Any, Optional
 
 import igrf12
 import zhaires
-from zhaires import run_directory
+from zhaires.path import get_run_directory
 
 
 __all__ = ["create_shower", "create_direct", "create_reflected"]
+
 
 def create_shower(
     name: str,
@@ -26,6 +27,7 @@ def create_shower(
     ground: float = 0.0,
     thinning: float = 1e-6,
     injection: float = 100.0,
+    geographic_azimuth: bool = False,
     restart: bool = False,
     default: Optional[str] = None,
     program: Optional[str] = None,
@@ -52,7 +54,7 @@ def create_shower(
     particle: str
         The ZHAireS string identifying the primary particle type ('proton')
     energy: float
-        The cosmic ray energy in log10(eV).
+        The cosmic ray energy in EeV.
     zenith: float
         The zenith angle of the shower axis in degrees.
     azimuth: float
@@ -69,6 +71,8 @@ def create_shower(
         The relative thinning level for the simulation (default: 1e-6).
     injection: float
         The injection altitude (in km).
+    geographic_azimuth: bool
+        If True, treat the azimuth angles as geographic azimuths.
     restart: bool
         If True, don't error if the simulation already exists/already started.
     default: Optional[str]
@@ -83,7 +87,7 @@ def create_shower(
         The created ZHAires simulation that can be run with `sim.run()`.
     """
     # create the simulation directory name
-    directory = join(run_directory, f"{name}")
+    directory = join(get_run_directory(), f"{name}")
 
     # create the output directory
     try:
@@ -117,11 +121,11 @@ def create_shower(
 
     # setup the primary particle energy
     sim.primary_particle(particle)
-    sim.primary_energy(10.0 ** energy)
+    sim.primary_energy(energy, "EeV")
 
     # and the zenith and azimuth information
     sim.primary_zenith(zenith)
-    sim.primary_azimuth(azimuth)
+    sim.primary_azimuth(azimuth, geographic_azimuth)
 
     # create the site for this event
     sim.add_site("LatLonAltSite", lat, lon, 1e3 * ground, unit="m")
@@ -228,6 +232,7 @@ def create_stratospheric(
     height: float = 38.0,
     thinning: float = 1e-6,
     restart: bool = False,
+    geographic_azimuth: bool = False,
     **kwargs: Any,
 ) -> zhaires.Task:
     """
@@ -246,7 +251,7 @@ def create_stratospheric(
     particle: str
         The ZHAireS string identifying the primary particle type.
     energy: float
-        The cosmic ray energy in log10(eV).
+        The cosmic ray energy in EeV.
     zenith: float
         The zenith angle of the shower axis in degrees.
     azimuth: float
@@ -287,7 +292,7 @@ def create_stratospheric(
     program = join(bindir, pname)
 
     # create the simulation directory name
-    directory = join(run_directory, f"{name}")
+    directory = join(get_run_directory(), f"{name}")
 
     # create the output directory
     try:
@@ -346,12 +351,12 @@ def create_stratospheric(
 
     # setup the primary particle energy to be the special RASPASS particle
     sim.primary_particle(special)
-    sim.primary_energy(10.0 ** energy)
+    sim.primary_energy(energy)
 
     # and the zenith and azimuth information - for stratospheric,
     # we take the complement of the zenith
     sim.primary_zenith(180.0 - zenith)
-    sim.primary_azimuth(azimuth)
+    sim.primary_azimuth(azimuth, geographic_azimuth)
 
     # create the site for this event
     sim.add_site("LatLonAltSite", lat, lon, 1e3 * ground, unit="m")

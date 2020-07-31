@@ -29,7 +29,7 @@ if __name__ == "__main__":
         "--energy",
         type=float,
         required=True,
-        help="The energy of the primary neutrino [log10(EeV)].",
+        help="The energy of the primary particle [EeV].",
     )
     parser.add_argument(
         "--particle", type=str, required=True, help="The particle to simulate"
@@ -45,6 +45,11 @@ if __name__ == "__main__":
         type=float,
         required=True,
         help="The azimuth angle of the shower axis (degrees).",
+    )
+    parser.add_argument(
+        "--geographic-azimuth",
+        action="store_true",
+        help="If present, azimuth is treated as a geographic azimuth angle."
     )
     parser.add_argument(
         "--latitude",
@@ -110,6 +115,7 @@ if __name__ == "__main__":
         ground=args.ground,
         thinning=args.thinning,
         injection=args.injection,
+        geographic=args.geographic_azimuth,
     )
 
     # and run the simulation
