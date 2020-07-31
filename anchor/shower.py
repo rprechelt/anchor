@@ -8,9 +8,10 @@ from os.path import dirname, join
 from typing import Any, Optional
 
 import igrf12
+import numpy as np
+
 import zhaires
 from zhaires.path import get_run_directory
-
 
 __all__ = ["create_shower", "create_direct", "create_reflected"]
 
@@ -29,6 +30,7 @@ def create_shower(
     injection: float = 100.0,
     geographic_azimuth: bool = False,
     restart: bool = False,
+    antenna_file: Optional[str] = None,
     default: Optional[str] = None,
     program: Optional[str] = None,
     **kwargs: Any,
@@ -73,6 +75,8 @@ def create_shower(
         The injection altitude (in km).
     geographic_azimuth: bool
         If True, treat the azimuth angles as geographic azimuths.
+    antenna_file: Optional[str]
+        If provided, a file containing (x, y, z) locations for each antenna.
     restart: bool
         If True, don't error if the simulation already exists/already started.
     default: Optional[str]
@@ -98,6 +102,9 @@ def create_shower(
         else:
             print(e)
             raise ValueError("Simulation already exists. Quitting...")
+
+    # get the path to the antenna file if provided before we change directories
+    antennas = op.abspath(antenna_file) if antenna_file else None
 
     # change to the sim directory
     os.chdir(directory)
@@ -146,6 +153,20 @@ def create_shower(
 
     # set the injection altitude
     sim.injection_altitude(injection)
+
+    # load the antenna file
+    if antennas:
+        if op.exists(antennas):
+
+            # load the antennas
+            x, y, z = np.loadtxt(antennas).T
+
+            # loop over the antennas
+            for i in np.arange(x.size):
+                sim.add_antenna(x[i], y[i], z[i])
+
+        else:  # we were provided a file, but it does not exists
+            raise ValueError(f"'antenna-file' does not exist.")
 
     # and return the simulation
     return sim
