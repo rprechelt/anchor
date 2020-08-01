@@ -141,5 +141,7 @@ else
         unpack_aires_and_compile direct ZHAireS-betav28r18c-loopfresnel
     fi
 
+    # we use direct (by default) as the binaries to use
+    echo We recommend adding ${DIR}/aires_direct_install/bin to your PATH
 
 fi
