@@ -69,7 +69,7 @@ unpack_aires_and_compile () {
 
     # if we are compiling the reflected version, patch the total time window
     if [ "$version" == "reflected" ]; then
-        sed -i "s,maxt=60000,maxt=120000,g" ${DIR}/${zhaires_src}/src/aires/fieldcomm.f
+        sed -i "s,maxt=60000,maxt=100000,g" ${DIR}/${zhaires_src}/src/aires/fieldcomm.f
     fi    
 
     # now copy the files from this ZHAires version
