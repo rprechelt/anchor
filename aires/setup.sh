@@ -67,36 +67,41 @@ unpack_aires_and_compile () {
     # and compile Aires
     ./doinstall 0
 
-    # if we are compiling the reflected version, patch the total time window
-    if [ "$version" == "reflected" ]; then
-        sed -i "s,maxt=60000,maxt=100000,g" ${DIR}/${zhaires_src}/src/aires/fieldcomm.f
-    fi    
+    # if we are not compiling the library version
+    if [ "$version" != "library" ]; then
+        
+        # if we are compiling the reflected version, patch the total time window
+        if [ "$version" == "reflected" ]; then
+            sed -i "s,maxt=60000,maxt=100000,g" ${DIR}/${zhaires_src}/src/aires/fieldcomm.f
+        fi    
 
-    # now copy the files from this ZHAires version
-    cp ${DIR}/${zhaires_src}/src/aires/* ${DIR}/${aires_src}/src/aires/
-    cp ${DIR}/${zhaires_src}/icfg/* ${DIR}/${aires_src}/icfg/
+        # now copy the files from this ZHAires version
+        cp ${DIR}/${zhaires_src}/src/aires/* ${DIR}/${aires_src}/src/aires/
+        cp ${DIR}/${zhaires_src}/icfg/* ${DIR}/${aires_src}/icfg/
 
-    # if we are compiling the stratospheric version, copy igrf11
-    if [ "$version" == "stratospheric" ]; then
-        cp ${DIR}/${zhaires_src}/src/igrf/* ${DIR}/${aires_src}/src/igrf/
-    fi        
+        # if we are compiling the stratospheric version, copy igrf11
+        if [ "$version" == "stratospheric" ]; then
+            cp ${DIR}/${zhaires_src}/src/igrf/* ${DIR}/${aires_src}/src/igrf/
+        fi        
 
-    # and redo the compilation now that zhaires is there
-    ./doinstall 0
+        # and redo the compilation now that zhaires is there
+        ./doinstall 0
 
-    # if we are compiling the stratospheric version, we also
-    # have to compile the special library file for RASPASS.
-    if [ "$version" == "stratospheric" ]; then
-        SRC=${DIR}/${zhaires_src}/RASPASSprimary/RASPASSprimary.f
-        LIBDIR=${DIR}/aires_${version}_install/lib/
-        gfortran ${SRC} -o ${DIR}/aires_${version}_install/bin/RASPASSprimary -L${LIBDIR} -lAires
-    fi
+        # if we are compiling the stratospheric version, we also
+        # have to compile the special library file for RASPASS.
+        if [ "$version" == "stratospheric" ]; then
+            SRC=${DIR}/${zhaires_src}/RASPASSprimary/RASPASSprimary.f
+            LIBDIR=${DIR}/aires_${version}_install/lib/
+            gfortran ${SRC} -o ${DIR}/aires_${version}_install/bin/RASPASSprimary -L${LIBDIR} -lAires
+        fi
 
-    # if it's the upgoing version, then add the appropriate special primary dirs
-    if [ "$version" == "upgoing" ]; then
-        mkdir ${DIR}/aires_${version}_install/special_src
-        mkdir ${DIR}/aires_${version}_install/special_bin
-    fi
+        # if it's the upgoing version, then add the appropriate special primary dirs
+        if [ "$version" == "upgoing" ]; then
+            mkdir ${DIR}/aires_${version}_install/special_src
+            mkdir ${DIR}/aires_${version}_install/special_bin
+        fi
+
+    fi # end library version check
 
     # change back to the setup directory
     cd ${DIR}
@@ -107,14 +112,15 @@ unpack_aires_and_compile () {
     # the location of the installed config file
     local airesrc=${HOME}/.airesrc
 
-    # we also now set the .airesrc file to point to this simulation
+        # we also now set the .airesrc file to point to this simulation
     sed -i s,Aireshome='"\${HOME}/aires"',Aireshome=${DIR}/aires_${version}_install,g ${airesrc}
-    sed -i 's,PrintCommand="lpr",PrintCommand=cat,g' ${airesrc}
-}
+    sed -i 's,PrintCommand="lpr",PrintCommand=cat,g'} ${airesrc}
 
+}
+ 
 # if the first script argument is clean, then delete all the directories
 if [ "$1" == "clean" ]; then
-    for version in reflected upgoing direct stratospheric; do
+    for version in reflected upgoing direct stratospheric library; do
         rm -rf aires_${version}_*
         rm -rf zhaires_${version}_*
     done
@@ -124,6 +130,9 @@ else
     if [ "$1" == "direct" ]; then
          echo "Building standard (direct) ZHAires..."
          unpack_aires_and_compile direct ZHAireS-betav28r18c-loopfresnel
+    elif [ "$1" == "library" ]; then
+         echo "Building AIRES library..."
+         unpack_aires_and_compile library ZHAireS-betav28r18c-loopfresnel
     elif [ "$1" == "reflected" ]; then
          echo "Building reflected ZHAires..."
          unpack_aires_and_compile reflected ZHAireS-betav28r21-ANITA-reflected-beta0.2-Frcoeffs
@@ -139,6 +148,7 @@ else
         unpack_aires_and_compile upgoing ZHAireS-betav28r18c-Upgoing
         unpack_aires_and_compile stratospheric  ZHAireS-betav28r24-RASPASS
         unpack_aires_and_compile direct ZHAireS-betav28r18c-loopfresnel
+        unpack_aires_and_compile library ZHAireS-betav28r18c-loopfresnel
     fi
 
     # we use direct (by default) as the binaries to use
