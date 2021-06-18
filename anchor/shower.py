@@ -7,7 +7,7 @@ import os.path as op
 from os.path import dirname, join
 from typing import Any, Optional
 
-import igrf12
+import igrf as igrf12
 import numpy as np
 
 import zhaires
