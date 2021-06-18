@@ -34,7 +34,7 @@ setup(
     keywords=["anita", "physics", "cosmic ray", "astronomy"],
     packages=["anchor"],
     python_requires=">=3.6*, <4",
-    install_requires=['numpy', 'igrf12',
+    install_requires=['numpy', 'igrf',
                       'zhaires @ git+git://github.com/rprechelt/zhaires.py'],
     extras_require={
         "test": ["pytest", "black", "mypy",
