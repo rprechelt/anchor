@@ -114,7 +114,7 @@ unpack_aires_and_compile () {
 
         # we also now set the .airesrc file to point to this simulation
     sed -i s,Aireshome='"\${HOME}/aires"',Aireshome=${DIR}/aires_${version}_install,g ${airesrc}
-    sed -i 's,PrintCommand="lpr",PrintCommand=cat,g'} ${airesrc}
+    sed -i 's,PrintCommand="lpr",PrintCommand=cat,g' ${airesrc}
 
 }
  
